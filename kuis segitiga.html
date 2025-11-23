@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Bangun Datar: Segitiga</title>
+    <!-- Memuat Tailwind CSS untuk styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles untuk memastikan tampilan yang bagus */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url(walpeper.png);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            height:100vh;
+        }
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .question-option:hover {
+            background-color: #f0fdf4; /* Light green on hover */
+        }
+        .selected {
+            border-color: #10b981; /* Emerald-500 */
+            background-color: #d1fae5; /* Lightest green */
+            box-shadow: 0 0 0 2px #10b981;
+        }
+        .correct {
+            border-color: #059669; /* Darker green for correct answer */
+            background-color: #a7f3d0; /* Correct color */
+        }
+        .incorrect {
+            border-color: #ef4444; /* Red for incorrect answer */
+            background-color: #fee2e2; /* Incorrect color */
+        }
+        /* Style untuk gambar pada soal 4 */
+        .image-option {
+            width: 100%;
+            height: 100px;
+            object-fit: contain;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="quiz-container">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-800">📐 Kuis Bangun Datar: Segitiga</h1>
+            <p class="text-xl text-gray-500 mt-2">Uji pengetahuanmu tentang sifat-sifat segitiga!</p>
+       <!-- Menggunakan fungsi Javascript yang lebih kuat untuk me-reload halaman. -->
+            <a href="index.html" onclick="resetQuiz(event)" class="absolute top-0 right-0 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-xl text-sm transition duration-200 shadow-md">
+                Kembali
+            </a>
+        </header>
+
+        <!-- Bagian Kuis -->
+        <div id="quiz-area" class="space-y-6">
+            <!-- Soal-soal akan di-render di sini oleh JavaScript -->
+        </div>
+
+        <!-- Tombol Selesai Kuis -->
+        <div class="mt-10 text-center">
+            <button id="submit-button" onclick="submitQuiz()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-xl transition duration-200 shadow-lg transform hover:scale-105 disabled:opacity-50" disabled>
+                Selesaikan Kuis & Lihat Skor
+            </button>
+        </div>
+
+        <!-- Modal Hasil Kuis -->
+        <div id="result-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
+            <div class="card p-8 w-full max-w-lg text-center">
+                <h2 class="text-3xl font-bold mb-4 text-emerald-600">Hasil Kuis Anda!</h2>
+                <p class="text-gray-700 text-xl">Skor Anda:</p>
+                <p id="final-score" class="text-5xl font-extrabold text-red-600 mt-2 mb-6"></p>
+
+                <div id="score-message" class="p-3 mb-6 rounded-lg font-medium"></div>
+
+                <button onclick="window.location.reload()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl transition duration-200">
+                    Ulangi Kuis
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Penjelasan Jawaban -->
+        <div id="answer-review" class="mt-10 p-6 card hidden">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Penjelasan Jawaban</h3>
+            <div id="review-content" class="space-y-4">
+                <!-- Penjelasan akan muncul di sini -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Data Soal Segitiga
+        // Catatan: Hanya mengambil soal-soal tentang Segitiga dari dokumen yang diunggah.
+        // Semua soal sekarang bernilai 20 agar total skor maksimal menjadi 100 (5 soal x 20)
+        const SCORE_PER_QUESTION = 20;
+
+        const quizData = [
+            {
+                id: 1,
+                question: "Jumlah sudut pada segitiga adalah…",
+                options: ["2", "3", "4", "5"],
+                correctAnswer: "3",
+                score: SCORE_PER_QUESTION, // Nilai 20
+            },
+            {
+                id: 2,
+                question: "Segitiga mempounyai sisi sebanyak..",
+                options: ["4", "5", "3", "7"],
+                correctAnswer: "3",
+                score: SCORE_PER_QUESTION, // Nilai 20
+            },
+            {
+                id: 3,
+                question: "Contoh segitiga pada kehidupan sehari-hari adalah…",
+                options: ["Gunungan wayang", "Jam dinding", "Laptop", "Meja"],
+                correctAnswer: "Gunungan wayang",
+                score: SCORE_PER_QUESTION, // Nilai 20
+            },
+            {
+                id: 4,
+                question: "Manakah dari gambar berikut yang memuat unsur segitiga?",
+                isImageQuestion: true,
+                // Menggunakan placeholder image URL. Anda dapat menggantinya dengan URL gambar yang sebenarnya jika tersedia.
+                options: [
+                    {
+                        img: "image.png",
+                        label: "1"
+                    },
+                    {
+                        img: "kelir wayang.png",
+                        label: "2"
+                    },
+                    {
+                        img: "belah ketupat.png",
+                        label: "3"
+                    },
+                    {
+                        img: "gendang.png",
+                        label: "4"
+                    }
+                ],
+                // Jawaban benar adalah Opsi 1 (indeks 0)
+                correctAnswer: "3",
+                score: SCORE_PER_QUESTION, // Nilai 20
+            },
+            {
+                id: 5,
+                question: "Berapa besar jumlah sudut segitiga?",
+                options: ["180", "120", "75", "90"],
+                correctAnswer: "180",
+                score: SCORE_PER_QUESTION, // Nilai 20
+            }
+        ];
+
+        let userAnswers = {}; // Menyimpan jawaban pengguna
+        let isQuizSubmitted = false;
+        const submitButton = document.getElementById('submit-button');
+
+        // Fungsi untuk mengacak urutan opsi
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Fungsi untuk membuat elemen HTML pertanyaan
+        function renderQuestions() {
+            const quizArea = document.getElementById('quiz-area');
+            quizArea.innerHTML = ''; // Bersihkan area kuis
+
+            quizData.forEach((question, index) => {
+                // Acak opsi untuk setiap pertanyaan
+                const optionsToRender = question.isImageQuestion ? question.options : shuffleArray([...question.options]);
+
+                let optionsHtml = '';
+                optionsToRender.forEach((option, optIndex) => {
+                    const optionValue = question.isImageQuestion ? option.label : option;
+                    const optionId = `q${question.id}-opt${optIndex}`;
+                    const isSelected = userAnswers[question.id] === optionValue;
+
+                    if (question.isImageQuestion) {
+                        // Untuk soal gambar
+                        optionsHtml += `
+                            <label for="${optionId}" class="question-option card p-3 flex flex-col items-center justify-center space-y-2 cursor-pointer transition duration-150 ${isSelected ? 'selected' : ''}">
+                                <input type="radio" id="${optionId}" name="question-${question.id}" value="${optionValue}" class="hidden" onchange="selectAnswer(${question.id}, '${optionValue}')" ${isSelected ? 'checked' : ''} ${isQuizSubmitted ? 'disabled' : ''}>
+                                <img src="${option.img}" alt="${option.label}" class="image-option border border-gray-300">
+                                <span class="text-sm font-medium text-gray-700 text-center">${option.label}</span>
+                            </label>
+                        `;
+                    } else {
+                        // Untuk soal teks
+                        optionsHtml += `
+                            <label for="${optionId}" class="question-option card p-4 flex items-center space-x-3 cursor-pointer transition duration-150 ${isSelected ? 'selected' : ''}">
+                                <input type="radio" id="${optionId}" name="question-${question.id}" value="${optionValue}" class="form-radio h-5 w-5 text-emerald-600 focus:ring-emerald-500" onchange="selectAnswer(${question.id}, '${optionValue}')" ${isSelected ? 'checked' : ''} ${isQuizSubmitted ? 'disabled' : ''}>
+                                <span class="text-lg text-gray-800">${optionValue}</span>
+                            </label>
+                        `;
+                    }
+                });
+
+                // Template kartu pertanyaan
+                const questionCard = `
+                    <div class="card p-6 border-l-4 border-emerald-500">
+                        <p class="text-xl font-semibold text-gray-800 mb-4">
+                            <span class="text-emerald-600 mr-2">Soal ${question.id}:</span> ${question.question} 
+                        </p>
+                        <div class="${question.isImageQuestion ? 'grid grid-cols-2 md:grid-cols-4 gap-4' : 'space-y-3'}">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+                quizArea.innerHTML += questionCard;
+            });
+
+            // Setelah render, perbarui status tombol
+            updateSubmitButtonStatus();
+        }
+
+        // Fungsi untuk menyimpan jawaban pengguna
+        function selectAnswer(questionId, answer) {
+            userAnswers[questionId] = answer;
+            // Perbarui tampilan kelas 'selected' secara manual
+            document.querySelectorAll(`input[name="question-${questionId}"]`).forEach(input => {
+                const label = input.closest('label');
+                if (input.value === answer) {
+                    label.classList.add('selected');
+                } else {
+                    label.classList.remove('selected');
+                }
+            });
+            updateSubmitButtonStatus();
+        }
+
+        // Fungsi untuk memeriksa apakah semua soal sudah dijawab
+        function updateSubmitButtonStatus() {
+            const totalQuestions = quizData.length;
+            const answeredQuestions = Object.keys(userAnswers).length;
+            submitButton.disabled = answeredQuestions < totalQuestions || isQuizSubmitted;
+        }
+
+        // Fungsi untuk menyelesaikan kuis dan menghitung skor
+        function submitQuiz() {
+            if (isQuizSubmitted) return; // Mencegah submit ganda
+
+            isQuizSubmitted = true;
+            submitButton.disabled = true;
+
+            let totalScore = 0;
+            const reviewContent = document.getElementById('review-content');
+            reviewContent.innerHTML = '';
+            
+            // Periksa jawaban dan hitung skor
+            quizData.forEach(question => {
+                const userAnswer = userAnswers[question.id];
+                const isCorrect = userAnswer === question.correctAnswer;
+                let userOptionElement;
+
+                // Tentukan elemen yang dipilih pengguna dan beri warna
+                document.querySelectorAll(`input[name="question-${question.id}"]`).forEach(input => {
+                    const label = input.closest('label');
+                    label.classList.remove('selected'); // Hapus seleksi biru
+                    label.setAttribute('disabled', 'true'); // Nonaktifkan interaksi
+
+                    if (input.value === question.correctAnswer) {
+                        // Tandai jawaban yang benar dengan warna hijau
+                        label.classList.add('correct');
+                    }
+                    if (input.value === userAnswer && !isCorrect) {
+                        // Tandai jawaban pengguna yang salah dengan warna merah
+                        label.classList.add('incorrect');
+                        userOptionElement = label;
+                    }
+                    if (input.value === userAnswer) {
+                         userOptionElement = label;
+                    }
+                });
+                
+                // Tambahkan skor jika benar
+                if (isCorrect) {
+                    totalScore += question.score;
+                }
+
+                // Tambahkan penjelasan ke modal review
+                reviewContent.innerHTML += `
+                    <div>
+                        <p class="font-bold text-gray-800">Soal ${question.id}: ${question.question}</p>
+                        <p class="text-sm">Jawaban Anda: <span class="font-medium ${isCorrect ? 'text-emerald-600' : 'text-red-600'}">${userAnswer}</span></p>
+                        <p class="text-sm">Jawaban Benar: <span class="font-medium text-emerald-600">${question.correctAnswer}</span> (Skor: ${isCorrect ? question.score : 0})</p>
+                        <p class="text-sm italic text-gray-600 mt-1">${question.explanation}</p>
+                    </div>
+                `;
+            });
+
+            // Tampilkan hasil kuis
+            const totalMaxScore = quizData.reduce((sum, q) => sum + q.score, 0);
+            document.getElementById('final-score').textContent = `${totalScore} / ${totalMaxScore}`;
+            
+            const messageEl = document.getElementById('score-message');
+            messageEl.classList.remove('bg-yellow-100', 'text-yellow-800', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+
+            if (totalScore === totalMaxScore) {
+                messageEl.textContent = "Luar biasa! Anda mendapatkan skor sempurna! 🥳";
+                messageEl.classList.add('bg-green-100', 'text-green-800');
+            } else if (totalScore > totalMaxScore * 0.75) {
+                messageEl.textContent = "Hebat! Anda hampir mencapai skor sempurna. Terus belajar! 👍";
+                messageEl.classList.add('bg-yellow-100', 'text-yellow-800');
+            } else if (totalScore > totalMaxScore / 2) {
+                messageEl.textContent = "Bagus! Pengetahuan Anda tentang Segitiga cukup baik! 👍";
+                messageEl.classList.add('bg-yellow-100', 'text-yellow-800');
+            } else {
+                messageEl.textContent = "Terus semangat belajar! Mari kita tinjau jawabannya. 💪";
+                messageEl.classList.add('bg-red-100', 'text-red-800');
+            }
+
+            document.getElementById('result-modal').classList.remove('hidden');
+            document.getElementById('answer-review').classList.remove('hidden');
+            
+            // Scroll ke atas untuk melihat hasil
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inisialisasi Kuis saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', renderQuestions);
+    </script>
+</body>
+</html>

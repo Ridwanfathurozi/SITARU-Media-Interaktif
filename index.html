@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SITARU - Media Interaktif</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {box-sizing:border-box;}
+body {
+  margin:0;
+  font-family:'Poppins', sans-serif;
+  background-image: url(walpeper.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+body::before {
+  content:"";
+  position: fixed;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  background: rgba(255, 245, 230, 0.5); /* overlay cream lembut */
+  z-index: -1;
+}
+
+.logo-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0 0px 0;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  /* Anchor tag sebagai container untuk gambar */
+  object-fit: contain;
+  border-radius: 8px;
+  display: block; /* Agar sizing height/width berfungsi */
+  height: 60px; /* Tinggi standar container logo */
+  text-decoration: none;
+  transition: transform 0.3s ease;
+  padding: 0;
+  overflow: hidden;
+  background-color: transparent; /* Hilangkan warna background anchor */
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+/* Atur ukuran berbeda-beda */
+.logo-1 { width: 110px; }
+.logo-2 { width: 80px; }
+.logo-3 { width: 28px; }
+.logo-4 { width: 50px; }
+.logo-5 { width: 30px; }
+
+/* Menambahkan style untuk tag <img> di dalam logo */
+.logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Pastikan gambar menyesuaikan tanpa terpotong */
+    border-radius: 8px; 
+    /* Placeholder background telah DIHAPUS agar tidak ada kotak warna */
+    background-color: transparent; 
+}
+
+
+header {
+  text-align:center;
+  padding:30px 20px 50px 20px;
+  transition: opacity 0.5s ease-in-out;
+}
+header h1 { 
+  font-size:36px; 
+  font-weight:700; 
+  margin-bottom:10px;
+  color:#4b2e1e;
+}
+header p { 
+  font-size:18px; 
+  margin:0;
+  color:#6b4c3b;
+}
+
+.materi-wrapper {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  justify-items: center;
+}
+
+/* Deskripsi Budaya */
+#deskripsi {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+.deskripsi-card {
+  background: rgba(255,255,255,0.9);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  width: 320px;
+  transition: all 0.4s ease, transform 0.5s ease;
+  cursor: pointer;
+}
+.deskripsi-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.25);
+}
+/* Style untuk ikon/placeholder gambar budaya */
+.deskripsi-card .desc-img { 
+  width: 80px; 
+  height: 80px; 
+  border-radius: 50%;
+  object-fit: cover; /* Memastikan gambar mengisi lingkaran */
+  background-color: #e8cdb3; /* Background jika gambar gagal dimuat */
+  flex-shrink: 0;
+  
+}
+
+.deskripsi-card h2 { margin:0; font-size:20px; color:#4b2e1e; }
+.deskripsi-card p { margin:5px 0 0; font-size:14px; color:#333; }
+
+/* Main & Materi */
+main, section.materi {
+  max-width:1100px;
+  margin:50px auto;
+  padding:0 20px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:40px;
+  justify-content:center;
+  transition: opacity 0.5s ease-in-out;
+}
+.sub-card {
+  background: rgba(139, 99, 57, 0.85);
+  padding:50px 80px;
+  border-radius:25px;
+  text-align:center;
+  font-weight:700;
+  font-size:26px;
+  color: #fffdf8;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  cursor:pointer;
+  transition: all 0.4s ease;
+  flex:1 1 250px;
+  position:relative;
+}
+.sub-card:hover {
+  transform: perspective(1000px) translateY(-10px) scale(1.03);
+  box-shadow:0 16px 32px rgba(0,0,0,0.25);
+}
+.sub-card img { display: none; /* Hide original placeholder images */ }
+
+section.materi { display:none; flex-direction:row; justify-content:center; }
+section.materi.active { display:flex; flex-wrap:wrap; }
+
+.card {
+  background: rgba(255,255,255,0.95);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 8px 16px rgba(0,0,0,0.2);
+  transition: all 0.4s ease;
+  position:relative;
+  width:300px;
+  text-align: center;
+}
+.card:hover { transform: translateY(-10px) scale(1.02); box-shadow:0 16px 32px rgba(0,0,0,0.25); }
+.card h2 { margin-top:0; font-weight:700; color:#4b2e1e; }
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+/* Style untuk Link (<a>) */
+.button-group a.content-link {
+  background: #b89068;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none; /* Hilangkan garis bawah default link */
+  display: inline-block; /* Agar padding dan dimensi berfungsi */
+}
+.button-group a.content-link:hover {
+  background: #8c6849;
+  transform: scale(1.05);
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+  justify-items: center;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+.back-btn {
+  padding: 12px 26px;
+  background: #b89068;
+  color: #fff;
+  border-radius: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #8c6849;
+  transform: scale(1.05);
+}
+
+footer {
+  text-align:center;
+  padding:30px 20px;
+  border-top:2px dashed #b89068;
+  font-size:14px;
+  margin-top:50px;
+  color:#4b2e1e;
+}
+.fade { opacity:0; transition: opacity 0.5s ease-in-out; }
+
+@media(max-width:768px){
+  .sub-card { padding:30px 40px; font-size:22px; }
+  .deskripsi-card { width:100%; flex-direction:column; align-items:center; text-align:center; }
+}
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+</head>
+
+<body>
+
+<!-- Logo Bar (Masing-masing link <a> sekarang berisi tag <img> placeholder) -->
+<div class="logo-bar">
+  <!-- Ganti src="..." dengan URL foto Anda -->
+  <a href="#unimus" class="logo logo-1">
+    <img src="unimus.png" alt="Logo UNIMUS">
+  </a>
+  <a href="#diktisaintek" class="logo logo-2">
+    <img src="diktisaintek.png" alt="Logo DIKTISAINTEK">
+  </a>
+  <a href="#sekolah" class="logo logo-3">
+    <img src="sekolah.png" alt="Logo Sekolah">
+  </a>
+  <a href="#matedu" class="logo logo-4">
+    <img src="matedu.png" alt="Logo MATEDU">
+  </a>
+  <a href="#pkm" class="logo logo-5">
+    <img src="pkm.png" alt="Logo PKM">
+  </a>
+</div>
+
+<header id="header">
+  <h1>SITARU</h1>
+  <p>Pembelajaran Kearifan Lokal Jawa Tengah (Wayang, Batik, dan Gamelan) Bangun Datar dan Bangun Ruang</p>
+</header>
+
+<section id="deskripsi">
+  <!-- KARTU 1: WAYANG -->
+  <div class="deskripsi-card" data-aos="fade-up" data-aos-delay="100">
+    <!-- Placeholder ikon diganti dengan tag img. Ganti src="wayang.png" dengan URL gambar Anda. -->
+    <img src="wayang.png" 
+         alt="Ikon Wayang" 
+         class="desc-img"
+         onerror="this.onerror=null; this.src='https://placehold.co/80x80/e8cdb3/4b2e1e?text=W'">
+    <div>
+      <h2>Wayang</h2>
+      <p>Wayang adalah seni pertunjukan tradisional Jawa yang kaya akan nilai moral, filosofi, dan ajaran kehidupan.</p>
+    </div>
+  </div>
+  
+  <!-- KARTU 2: BATIK -->
+  <div class="deskripsi-card" data-aos="fade-up" data-aos-delay="200">
+    <!-- Placeholder ikon diganti dengan tag img. Ganti src="batik.png" dengan URL gambar Anda. -->
+    <img src="batik.jpg" 
+         alt="Ikon Batik" 
+         class="desc-img"
+         onerror="this.onerror=null; this.src='https://placehold.co/80x80/e8cdb3/4b2e1e?text=B'">
+    <div>
+      <h2>Batik</h2>
+      <p>Batik merupakan warisan budaya Indonesia dengan pola-pola geometris dan simbolis yang mencerminkan kearifan serta ketertiban.</p>
+    </div>
+  </div>
+  
+  <!-- KARTU 3: GAMELAN -->
+  <div class="deskripsi-card" data-aos="fade-up" data-aos-delay="300">
+    <!-- Placeholder ikon diganti dengan tag img. Ganti src="gamelan.png" dengan URL gambar Anda. -->
+    <img src="gong.jpg" 
+         alt="Ikon Gamelan" 
+         class="desc-img"
+         onerror="this.onerror=null; this.src='https://placehold.co/80x80/e8cdb3/4b2e1e?text=G'">
+    <div>
+      <h2>Gamelan</h2>
+      <p>Gamelan adalah musik tradisional Jawa yang menghadirkan harmoni, keseimbangan, dan ketenangan dalam setiap permainannya.</p>
+    </div>
+  </div>
+</section>
+
+<main id="home">
+  <div class="sub-card" onclick="showMateri('datar')">
+    Bangun Datar
+  </div>
+  <div class="sub-card" onclick="showMateri('ruang')">
+    Bangun Ruang
+  </div>
+</main>
+
+<!-- BANGUN DATAR -->
+<section id="datar" class="materi">
+
+  <div class="materi-wrapper">
+
+    <div class="card">
+      <h2>Persegi</h2>
+      <div class="button-group">
+        <a href="https://drive.google.com/file/d/1tRwCG9_gRy3jLqOibcLQgdQLNJrTIDLS/view?usp=sharing" class="content-link">Materi</a>
+        <a href="https://drive.google.com/file/d/1Ehwkoc6tnzCNb3A5UChc8fIINPRw957r/view?usp=sharing" class="content-link">Video</a>
+        <a href="kuis persegi.html" class="content-link">Quiz</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Persegi Panjang</h2>
+      <div class="button-group">
+        <a href="https://drive.google.com/file/d/1ugbDjHWHSVEH7dvzbVkJpdalffse4cqI/view?usp=sharing" class="content-link">Materi</a>
+        <a href="https://drive.google.com/file/d/1lzthRdgUw_gGXWvl_IT4PxmO1KIu9iw-/view?usp=sharing" class="content-link">Video</a>
+        <a href="kuis persegi panjang.html" class="content-link">Quiz</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Segitiga</h2>
+      <div class="button-group">
+        <a href="https://drive.google.com/file/d/171q9ki1_iXkWheq15XX4GWtRI96DsOiq/view?usp=sharing" class="content-link">Materi</a>
+        <a href="https://drive.google.com/file/d/1d9UPJBviWkWw5KqADC6aPOQLoXH2eIx7/view?usp=sharing" class="content-link">Video</a>
+        <a href="kuis segitiga.html" class="content-link">Quiz</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Lingkaran</h2>
+      <div class="button-group">
+        <a href="https://drive.google.com/file/d/1GOzLiYYzkHg0A_3R8qnnUtQCkwG2AvRM/view?usp=sharing" class="content-link">Materi</a>
+        <a href="https://drive.google.com/file/d/1ZKW9-9uXm6OexjZHu8Axk1zymBcOUXQD/view?usp=sharing" class="content-link">Video</a>
+        <a href="kuis lingkaran.html" class="content-link">Quiz</a>
+      </div>
+    </div>
+
+    <div class="back-container">
+      <a class="back-btn" onclick="showHome()">← Kembali</a>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- BANGUN RUANG -->
+<section id="ruang" class="materi materi-wrapper">
+
+  <div class="card">
+    <h2>Tabung</h2>
+    <div class="button-group">
+      <a href="https://drive.google.com/file/d/1szROfVSmIkCdCiyhCYxX9brCW6Lgbnld/view?usp=sharing" class="content-link">Materi</a>
+      <a href="https://drive.google.com/file/d/1eTIbwTCqWu4WN7YvYt1MY-TJPhVxKwPb/view?usp=sharing" class="content-link">Video</a>
+      <a href="kuis tabung.html" class="content-link">Quiz</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Balok</h2>
+    <div class="button-group">
+      <a href="https://drive.google.com/file/d/1Lwm1r6efMdSDv3-j8cZy9lIjKxy2UP-q/view?usp=sharing" class="content-link">Materi</a>
+      <a href="https://drive.google.com/file/d/12UpsSvouNcZsZsYX5xsJtZWgJYVkH9sp/view?usp=sharing" class="content-link">Video</a>
+      <a href="kuis balok.html" class="content-link">Quiz</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Kubus</h2>
+    <div class="button-group">
+      <a href="https://drive.google.com/file/d/1VJIHkTKwH7JhK7yl8dgi6qSa13LZoif7/view?usp=sharing" class="content-link">Materi</a>
+      <a href="https://drive.google.com/file/d/1mhQ_caHlSGyeE3LaWMHIF1NGfUUy3ouQ/view?usp=sharing" class="content-link">Video</a>
+      <a href="kuis kubus.html" class="content-link">Quiz</a>
+    </div>
+  </div>
+
+  <div class="back-container">
+    <a class="back-btn" onclick="showHome()">← Kembali</a>
+  </div>
+
+</section>
+
+<footer>
+  © 2025 — PKM RSH SITARU
+</footer>
+
+<script>
+// Fungsi navigasi showMateri dan showHome tidak berubah
+function showMateri(section){
+  const home = document.getElementById('home');
+  const header = document.getElementById('header');
+  const deskripsi = document.getElementById('deskripsi');
+  const target = document.getElementById(section);
+
+  // Menyembunyikan elemen dengan animasi fade out
+  home.style.opacity = 0; header.style.opacity=0; deskripsi.style.opacity=0;
+  setTimeout(()=>{
+    home.style.display='none';
+    header.style.display='none';
+    deskripsi.style.display='none';
+    
+    // Menampilkan elemen target
+    target.classList.add('active');
+    target.style.opacity=0;
+    target.style.display='flex';
+    
+    // Animasi fade in elemen target
+    setTimeout(()=>target.style.opacity=1,50);
+    window.scrollTo({top:0, behavior:'smooth'});
+  },300);
+}
+
+function showHome(){
+  const home=document.getElementById('home');
+  const header=document.getElementById('header');
+  const deskripsi=document.getElementById('deskripsi');
+  
+  // Menyembunyikan semua section materi dengan fade out
+  document.querySelectorAll('section.materi').forEach(s=>{
+    s.style.opacity=0;
+    setTimeout(()=>{ s.classList.remove('active'); s.style.display='none'; },300);
+  });
+  
+  // Menampilkan home, header, dan deskripsi dengan fade in
+  setTimeout(()=>{
+    home.style.display='flex';
+    header.style.display='block';
+    deskripsi.style.display='flex';
+    setTimeout(()=>{ home.style.opacity=1; header.style.opacity=1; deskripsi.style.opacity=1; },50);
+    window.scrollTo({top:0, behavior:'smooth'});
+  },300);
+}
+
+// Inisialisasi AOS
+AOS.init({ duration: 800, easing: 'ease-in-out', once:true });
+</script>
+
+</body>
+</html>
